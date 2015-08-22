@@ -1,0 +1,8 @@
+﻿<configuration>
+  <path>C:\Users\Noah\Desktop\TestDownloadOrdner\</path>
+  <setPath>0</setPath>
+  <setArtist>0</setArtist>
+  <setImage>0</setImage>
+  <setOpenFolder>1</setOpenFolder>
+  <setSkip>1</setSkip>
+</configuration>
