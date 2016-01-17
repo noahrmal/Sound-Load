@@ -8,21 +8,29 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Drawing;
+using System.Xml;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using HundredMilesSoftware.UltraID3Lib;
+using NAudio.Wave;
 
 
 namespace SoundCloudDownloader
 {
     public partial class MainForm : Form
     {
+        public enum SearchType
+        {
+            TRACK, PLAYLIST, USERALL, SEARCH
+        }
+
         public class Track
         {
-            public string stream_url { get; set; }
+            public string uri { get; set; }
             public string title { get; set; }
             public string artwork_url { get; set; }
+            public bool streamable { get; set; }
 
             public User user { get; set; }
 
@@ -35,66 +43,71 @@ namespace SoundCloudDownloader
         public class User
         {
             public string username { get; set; }
+            public string id { get; set; }
         }
 
-        public class Tracks
+
+        public class RootPlaylist
         {
             public List<Track> tracks { get; set; }
             public string kind { get; set; }
             public string title { get; set; }
         }
 
+        public class RootCollection
+        {
+            public List<Collection> collection { get; set; }
+        }
 
+        public class Collection
+        {
+            public Track track { get; set; }
+            public string type { get; set; }
+        }
+
+        private Properties.Settings settings = Properties.Settings.Default;
         private WebClient wbClient = new WebClient();
-        private static XmlConfiguration configuration;
-        private static readonly string m_Direcotry = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "SoundCloud");
-        private string downloadFolder, tempDownloadFolder, playlistTitle;
+        private static readonly string m_Direcotry = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), "Soundcloud");
+        private static readonly string saveDirectory = Path.GetTempPath() + "/LinkList.xml";
+        private static readonly string clientID = "06e3e204bdd61a0a41d8eaab895cb7df";
+        private string downloadFolder, tempDownloadFolder, title;
         private int totalTracksCount, tracksCount;
-        private bool isPlaylist, path, artist, image, openFolder, skip;
+
+        private SearchType type;
 
 
         public MainForm()
         {
             InitializeComponent();
 
+            wbClient.Proxy = null;
             Directory.CreateDirectory(m_Direcotry);
             wbClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(Client_DownloadStringCompleted);
 
             ThreadPool.QueueUserWorkItem((_) => { });
-            LoadConfiguration();
 
-        }
+            chkBxDownloadPath.Checked = settings.Path;
+            chkBxArtistTag.Checked = settings.Artist;
+            chkBxImageTags.Checked = settings.Cover;
+            chkBxOpenFolder.Checked = settings.OpenFolder;
+            chkBxSkip.Checked = settings.Skip;
 
-        private void LoadConfiguration()
-        {
-            configuration = new XmlConfiguration("config.xml");
-            configuration.LoadConfigurationFile();
-
-            downloadFolder = configuration.GetConfiguration("path");
-            path = Convert.ToBoolean(Convert.ToInt32(configuration.GetConfiguration("setPath")));
-            artist = Convert.ToBoolean(Convert.ToInt32(configuration.GetConfiguration("setArtist")));
-            image = Convert.ToBoolean(Convert.ToInt32(configuration.GetConfiguration("setImage")));
-            openFolder = Convert.ToBoolean(Convert.ToInt32(configuration.GetConfiguration("setOpenFolder")));
-            skip = Convert.ToBoolean(Convert.ToInt32(configuration.GetConfiguration("skip")));
-
-            chkBxDownloadPath.Checked = path;
-            chkBxArtistTag.Checked = artist;
-            chkBxImageTags.Checked = image;
-            chkBxOpenFolder.Checked = openFolder;
-            chkBxSkip.Checked = skip;
-
+            downloadFolder = settings.DownloadPath;
             txtBxPath.Text = downloadFolder;
+
+            LoadListsToCombobox();
         }
+
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            configuration.SetConfigurationEntry("setPath", (Convert.ToInt32(chkBxDownloadPath.Checked)).ToString());
-            configuration.SetConfigurationEntry("setArtist", (Convert.ToInt32(chkBxArtistTag.Checked)).ToString());
-            configuration.SetConfigurationEntry("setImage", (Convert.ToInt32(chkBxImageTags.Checked)).ToString());
-            configuration.SetConfigurationEntry("setOpenFolder", (Convert.ToInt32(chkBxOpenFolder.Checked)).ToString());
-            configuration.SetConfigurationEntry("skip", (Convert.ToInt32(chkBxSkip.Checked)).ToString());
-            configuration.SetConfigurationEntry("path", downloadFolder);
-            configuration.SaveConfigurationFile();
+            settings.Path = chkBxDownloadPath.Checked;
+            settings.Artist = chkBxArtistTag.Checked;
+            settings.Cover = chkBxImageTags.Checked;
+            settings.OpenFolder = chkBxOpenFolder.Checked;
+            settings.Skip = chkBxSkip.Checked;
+            settings.DownloadPath = txtBxPath.Text;
+            settings.Save();
         }
 
 
@@ -158,84 +171,161 @@ namespace SoundCloudDownloader
             }
         }
 
-
-
-        private void m_tbxPage_TextChanged(object sender, EventArgs e)
+        private void SetChecked(bool check)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<bool>(SetChecked), check);
+            }
+            else
+            {
+                for (int i = 0; i < m_lbxEntries.Items.Count; i++)
+                {
+                    m_lbxEntries.SetItemChecked(i, check);
+                }
+            }
+
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string url = txtBxUrl.Text;
+            title = "";
+
             if (txtBxUrl.Text != "")
             {
-                string uri;
-                uri = txtBxUrl.Text;
+                type = SearchType.TRACK;
 
-                if (!uri.ToLower().StartsWith("https://soundcloud.com"))
+                if (!url.ToLower().StartsWith("https://soundcloud.com"))
                 {
-                    MessageBox.Show("No correct soundcloud URL or link!");
-                    txtBxUrl.Text = "";
-                    txtBxUrl.Placeholder = "Put your Soundcloud playlist or track link here!";
-                    return;
+                    type = SearchType.SEARCH;
                 }
-                if (txtBxUrl.Text.Contains("sets")) 
+                if (txtBxUrl.Text.Contains("sets"))
                 {
-                    isPlaylist = true;
+                    type = SearchType.PLAYLIST;
                 }
-                else 
+                Regex regex = new Regex("^.+?(soundcloud.com\\/[^\\/\\?]+?)\\/?$", RegexOptions.Multiline);
+                if (regex.IsMatch(url))
                 {
-                    isPlaylist = false;
+                    type = SearchType.USERALL;
                 }
-
-                SetEnabled(false);
-                m_tslInfo.Text = "Loading Playlist information";
-                m_lbxEntries.Items.Clear();
-                string url = string.Format("http://api.soundcloud.com/resolve.json?url={0}&client_id=YOUR_CLIENT_ID", txtBxUrl.Text);
-                wbClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-                wbClient.DownloadStringAsync(new Uri(url));
+                ScApiLoadJson(url);
             }
         }
+
+        private void ScApiLoadJson(string pUrl)
+        {
+            string url = pUrl;
+            User user = new User();
+
+            SetEnabled(false);
+            m_tslInfo.Text = "Loading Playlist information";
+            m_lbxEntries.Items.Clear();
+
+            if (type == SearchType.USERALL)
+            {
+                string userJson = wbClient.DownloadString(string.Format("http://api.soundcloud.com/resolve.json?url={0}&client_id={1}", url, clientID));
+                user = JsonConvert.DeserializeObject<User>(userJson);
+                if (title != "")
+                {
+                    title = user.username;
+                    lablTitle.Text = title;
+                }
+            }
+
+            string tmpUrl = url;
+            switch (type)
+            {
+                case SearchType.TRACK:
+                case SearchType.PLAYLIST:
+                    url = string.Format("http://api.soundcloud.com/resolve.json?url={0}&client_id={1}", tmpUrl, clientID);
+                    break;
+                case SearchType.USERALL:
+                    url = string.Format("https://api-v2.soundcloud.com/profile/soundcloud%3Ausers%3A{0}?limit=1000&client_id={1}", user.id, clientID);
+                    break;
+                case SearchType.SEARCH:
+                    url = string.Format("http://api.soundcloud.com/tracks.json?client_id={1}&q={0}&limit=200", tmpUrl, clientID);
+                    break;
+            }
+
+            wbClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+            wbClient.DownloadStringAsync(new Uri(url));
+        }
+
 
         private void Client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             try
             {
                 int count = 0;
-                ThreadPool.QueueUserWorkItem(
-                (_) =>
+                switch (type)
                 {
-                    if (isPlaylist)
-                    {
-                        Tracks playlist = JsonConvert.DeserializeObject<Tracks>(e.Result);
-                        playlistTitle = playlist.title;
-
-                        foreach (var track in playlist.tracks)
+                    case SearchType.TRACK:
+                        Track singleTrack = JsonConvert.DeserializeObject<Track>(e.Result);
+                        if (singleTrack.streamable)
                         {
-                            if (track.stream_url != null)
-                            {
-                                AddItem(track);
-                                ++count;
-                            }
-                            else 
-                            {
-                                lbxErrorLog.Items.Add(track.title + " -> track is not streamable and cannot be downloaded!");                            
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Track track = JsonConvert.DeserializeObject<Track>(e.Result);
-                        if (track.stream_url != null)
-                        {
-                            AddItem(track);
+                            AddItem(singleTrack);
                             ++count;
                         }
                         else
                         {
-                            lbxErrorLog.Items.Add(track.title + " -> track is not streamable and cannot be downloaded!");
+                            lbxErrorLog.Items.Add(singleTrack.title + " -> track is not streamable and cannot be downloaded!");
                         }
-                       
-                    }     
-                       
-                    SetEnabled(true);
-                    SetInfo(String.Format("Found {0} Tracks!", count));
-                });
+                        break;
+                    case SearchType.PLAYLIST:
+                        RootPlaylist playlist = JsonConvert.DeserializeObject<RootPlaylist>(e.Result);
+                        title = playlist.title;
+                        lablTitle.Text = title;
+                        foreach (var track in playlist.tracks)
+                        {
+                            if (track.streamable)
+                            {
+                                AddItem(track);
+                                ++count;
+                            }
+                            else
+                            {
+                                lbxErrorLog.Items.Add(track.title + " -> track is not streamable and cannot be downloaded!");
+                            }
+                        }
+                        break;
+                    case SearchType.USERALL:
+                        RootCollection collection = JsonConvert.DeserializeObject<RootCollection>(e.Result);
+                        foreach (var item in collection.collection)
+                        {
+                            if (item.type != "playlist")
+                            {
+                                if (item.track.streamable)
+                                {
+                                    AddItem(item.track);
+                                    ++count;
+                                }
+                                else
+                                {
+                                    lbxErrorLog.Items.Add(item.track.title + " -> track is not streamable and cannot be downloaded!");
+                                }
+                            }
+                        }
+                        break;
+                    case SearchType.SEARCH:
+                        Track[] tracklist = JsonConvert.DeserializeObject<Track[]>(e.Result);
+                        foreach (var track in tracklist)
+                        {
+                            if (track.streamable)
+                            {
+                                AddItem(track);
+                                ++count;
+                            }
+                            else
+                            {
+                                lbxErrorLog.Items.Add(track.title + " -> track is not streamable and cannot be downloaded!");
+                            }
+                        }
+                        break;
+                }
+                lablTitle.Text = title;
+                SetEnabled(true);
+                SetInfo(String.Format("{0} Tracks Found!", count));
             }
             catch (Exception ex)
             {
@@ -250,7 +340,7 @@ namespace SoundCloudDownloader
             double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
             double percentage = bytesIn / totalBytes * 100;
 
-            SetLablStatus((bytesIn / 1000000).ToString("0.##") + "/" + (totalBytes / 1000000).ToString("0.##") + " MB ("+ tracksCount + "/" + totalTracksCount.ToString() + ")");
+            SetLablStatus((bytesIn / 1000000).ToString("0.##") + "/" + (totalBytes / 1000000).ToString("0.##") + " MB (" + tracksCount + "/" + totalTracksCount.ToString() + ")");
             SetProgressbar(int.Parse(Math.Truncate(percentage).ToString()));
         }
 
@@ -263,8 +353,7 @@ namespace SoundCloudDownloader
         }
 
 
-
-        private void btnDownloadSelectedClick(object sender, EventArgs e)
+        private void btnDownload_Click(object sender, EventArgs e)
         {
             string finalPath;
             SetEnabled(false);
@@ -281,9 +370,9 @@ namespace SoundCloudDownloader
                 finalPath = m_Direcotry;
             }
 
-            if (isPlaylist)
+            if (type != SearchType.TRACK)
             {
-                finalPath = Path.Combine(finalPath, playlistTitle);
+                finalPath = Path.Combine(finalPath, title);
                 if (!System.IO.Directory.Exists(finalPath))
                 {
                     System.IO.Directory.CreateDirectory(finalPath);
@@ -303,9 +392,9 @@ namespace SoundCloudDownloader
 
                         SetInfo("Downloading " + fileName);
                         tracksCount++;
-                        
+
                         tempDownloadFolder = Path.Combine(finalPath, fileName);
-                     
+
                         if (File.Exists(tempDownloadFolder))
                         {
                             if (chkBxSkip.Checked)
@@ -318,7 +407,7 @@ namespace SoundCloudDownloader
                             }
                         }
 
-                        string url = String.Format("{0}.json?client_id=YOUR_CLIENT_ID", track.stream_url);
+                        string url = String.Format("{0}/stream.json?client_id={1}", track.uri, clientID);
                         wbClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
                         wbClient.DownloadFileCompleted += HandleDownloadComplete;
 
@@ -331,11 +420,7 @@ namespace SoundCloudDownloader
 
                         var u = new UltraID3();
                         u.Read(tempDownloadFolder);
-                        if (chkBxArtistTag.Checked)
-                        {
-                            User usr = track.user;
-                            u.Artist = ((User)track.user).username;
-                        }
+                       
                         if (track.artwork_url != null && chkBxImageTags.Checked)
                         {
                             Stream stream = wbClient.OpenRead(track.artwork_url);
@@ -344,19 +429,33 @@ namespace SoundCloudDownloader
                             var pictureFrame = new ID3v23PictureFrame(bmp, PictureTypes.CoverFront, "image", TextEncodingTypes.ISO88591);
                             u.ID3v2Tag.Frames.Add(pictureFrame);
                         }
+                        if (track.title.Contains("-"))
+                        {
+                            string[] splitTitle = track.title.Split('-');
+                            u.Title = splitTitle[1];
+                            if (chkBxArtistTag.Checked)
+                            {
+                                u.Artist = splitTitle[0]; //((User)track.user).username;
+                            }
+                        }
+                        else
+                        {
+                            u.Title = track.title;
+                        }
                         u.Write();
                     }
 
                     SetInfo("Finished Downloading!");
                     SetEnabled(true);
                     SetChecked(false);
+                    totalTracksCount = 0;
+                    tracksCount = 0;
                     if (chkBxOpenFolder.Checked)
                     {
                         System.Diagnostics.Process.Start("explorer.exe", finalPath);
                     }
                 });
         }
-
 
 
         private void chkBxSelectAll_CheckedChanged(object sender, EventArgs e)
@@ -370,19 +469,7 @@ namespace SoundCloudDownloader
                 SetChecked(true);
             }
         }
-        private void SetChecked(bool check)
-        {
-            for (int i = 0; i < m_lbxEntries.Items.Count; i++)
-            {
-                m_lbxEntries.SetItemChecked(i, check);
-            }
-        }
 
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            m_lbxEntries.Items.Clear();
-            txtBxUrl.Text = "";
-        }
 
         private void chkBxDownloadPath_CheckedChanged(object sender, EventArgs e)
         {
@@ -398,6 +485,95 @@ namespace SoundCloudDownloader
                 downloadFolder = dialog.SelectedPath;
                 txtBxPath.Text = downloadFolder;
             }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (txtBxUrl.Text == "")
+            {
+                return;
+            }
+            form_Inputbox InputBox = new form_Inputbox();
+            if (InputBox.ShowDialog() == DialogResult.OK)
+            {
+                XmlDocument doc = new XmlDocument();
+                if (!File.Exists(saveDirectory))
+                {
+                    XmlNode myRoot;
+                    myRoot = doc.CreateElement("LinkList");
+                    doc.AppendChild(myRoot);
+                    doc.Save(@Path.GetTempPath() + "/LinkList.xml");
+                }
+
+                doc.Load(saveDirectory);
+                XmlNode root = doc.DocumentElement;
+                XmlElement Link = doc.CreateElement("Link");
+
+                XmlElement name = doc.CreateElement("Name");
+                name.InnerText = InputBox.getName;
+                XmlElement type1 = doc.CreateElement("Type");
+                type1.InnerText = type.ToString();
+                XmlElement url = doc.CreateElement("Url");
+                url.InnerText = txtBxUrl.Text;
+
+                Link.AppendChild(name);
+                Link.AppendChild(type1);
+                Link.AppendChild(url);
+                root.AppendChild(Link);
+                doc.Save(saveDirectory);
+            }
+        }
+
+        private void LoadListsToCombobox()
+        {
+            comboBxSavePlaylists.Items.Clear();
+            XmlReader reader = XmlReader.Create(saveDirectory);
+            
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element && reader.Name == "Name")
+                {
+                    comboBxSavePlaylists.Items.Add(reader.ReadString());
+                }
+            }
+            reader.Close();
+        }
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            bool stop = false;
+            string name = "";
+            m_lbxEntries.Items.Clear();
+            XmlReader reader = XmlReader.Create(saveDirectory);
+
+            while (reader.Read() && !stop)
+            {
+                if (reader.NodeType == XmlNodeType.Element)
+                {
+                    switch (reader.Name)
+                    {
+                        case "Name":
+                            name = reader.ReadString();
+                            break;
+                        case "Type":
+                            if (name == comboBxSavePlaylists.Text)
+                            {
+                                type = (SearchType)Enum.Parse(typeof(SearchType), reader.ReadString()); 
+                            }
+                            break;
+                        case "Url":
+                            if (name == comboBxSavePlaylists.Text)
+                            {
+                                ScApiLoadJson(reader.ReadString());
+                                title = name;
+                                lablTitle.Text = title;
+                                stop = true;
+                            }
+                            break;
+                    }
+                }
+            }
+            reader.Close();
         }
     }
 }
