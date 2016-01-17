@@ -1,0 +1,11 @@
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Debug\Sound-Load.exe.config
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Debug\Sound-Load.exe
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Debug\Sound-Load.pdb
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Debug\config.xml
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Debug\Sound-Load.exe
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Debug\Sound-Load.pdb
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Debug\Newtonsoft.Json.dll
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Debug\UltraID3Lib.dll
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Debug\Sound-Load.csprojResolveAssemblyReference.cache
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Debug\SoundCloudDownloader.MainForm.resources
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Debug\Sound-Load.csproj.GenerateResource.Cache

@@ -1,0 +1,14 @@
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Release\config.xml
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Release\Soundload.exe.config
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Release\Soundload.exe
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Release\Soundload.pdb
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Release\NAudio.dll
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Release\Newtonsoft.Json.dll
+E:\Programmierung\c#\Sound-Load\Soundload\bin\Release\UltraID3Lib.dll
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Release\Soundload.csprojResolveAssemblyReference.cache
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Release\SoundCloudDownloader.form_Inputbox.resources
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Release\SoundCloudDownloader.MainForm.resources
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Release\SoundLoad.Properties.Resources.resources
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Release\Soundload.csproj.GenerateResource.Cache
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Release\Soundload.exe
+E:\Programmierung\c#\Sound-Load\Soundload\obj\x86\Release\Soundload.pdb
