@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Soundload</RootNamespace>
+    <RootNamespace>SoundCloudDownloader</RootNamespace>
     <AssemblyName>Soundload</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -75,6 +75,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
@@ -84,6 +85,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioStreamPlayer.cs" />
     <Compile Include="gui\Inputbox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +100,12 @@
     </Compile>
     <Compile Include="gui\PlaceholderTextBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gui\VolumeControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="gui\VolumeControl.Designer.cs">
+      <DependentUpon>VolumeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -132,11 +140,28 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\SoundCloudDownloader.vshost.exe" />
+    <Content Include="Resources\Back.png" />
+    <Content Include="Resources\Download From Cloud Filled-25.png" />
+    <Content Include="Resources\download.png" />
+    <Content Include="Resources\Forward.png" />
+    <None Include="Resources\Mute.bmp" />
+    <None Include="Resources\Mute.png" />
+    <None Include="Resources\Loop.png" />
+    <None Include="Resources\LoopOn.png" />
+    <Content Include="Resources\Open.png" />
+    <Content Include="Resources\Pause.png" />
+    <None Include="Resources\Play.bmp" />
+    <Content Include="Resources\Play.png" />
+    <None Include="Resources\RandomOn.png" />
+    <None Include="Resources\Random.png" />
+    <Content Include="Resources\Save.png" />
+    <Content Include="Resources\Search-15.png" />
+    <None Include="Resources\Shuffle.png" />
+    <None Include="Resources\Search.png" />
+    <Content Include="Resources\Stop.png" />
+    <None Include="Resources\Volume.png" />
     <Content Include="soundload.ico" />
     <Content Include="soundload2.ico" />
-    <None Include="config.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Content Include="libs\Newtonsoft.Json.dll" />
     <Content Include="libs\UltraID3Lib.dll" />
     <None Include="Properties\Settings.settings">
@@ -152,6 +177,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="gui\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gui\VolumeControl.resx">
+      <DependentUpon>VolumeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

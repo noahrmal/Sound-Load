@@ -29,18 +29,24 @@ namespace SoundCloudDownloader
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.m_sstMain = new System.Windows.Forms.StatusStrip();
             this.m_tslInfo = new System.Windows.Forms.ToolStripStatusLabel();
             this.m_pnlContent = new System.Windows.Forms.Panel();
-            this.btnSearch = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.comboBxSavePlaylists = new System.Windows.Forms.ComboBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnOpen = new System.Windows.Forms.Button();
+            this.toolStrip3 = new System.Windows.Forms.ToolStrip();
+            this.comboBxSavePlaylists = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.labelCurrentTime = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.labelTotalTime = new System.Windows.Forms.ToolStripLabel();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.chkBxKeepTracks = new System.Windows.Forms.CheckBox();
+            this.lablTrackPosition = new System.Windows.Forms.Label();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.lablTitle = new System.Windows.Forms.Label();
-            this.btnDownload = new System.Windows.Forms.Button();
             this.chkBxSelectAll = new System.Windows.Forms.CheckBox();
             this.m_lbxEntries = new System.Windows.Forms.CheckedListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -56,21 +62,40 @@ namespace SoundCloudDownloader
             this.chkBxDownloadPath = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.lbxErrorLog = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lablDownloadedBytes = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.btnOpen = new System.Windows.Forms.ToolStripButton();
+            this.btnSave = new System.Windows.Forms.ToolStripButton();
+            this.btnVolume = new System.Windows.Forms.ToolStripButton();
+            this.btnRandomTrack = new System.Windows.Forms.ToolStripButton();
+            this.btnLoop = new System.Windows.Forms.ToolStripButton();
+            this.btnDownload = new System.Windows.Forms.ToolStripButton();
+            this.btnBack = new System.Windows.Forms.ToolStripButton();
+            this.btnPlay = new System.Windows.Forms.ToolStripButton();
+            this.btnForward = new System.Windows.Forms.ToolStripButton();
+            this.btnStop = new System.Windows.Forms.ToolStripButton();
             this.txtBxUrl = new SoundCloudDownloader.PlaceholderTextBox();
             this.m_sstMain.SuspendLayout();
             this.m_pnlContent.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.toolStrip3.SuspendLayout();
+            this.toolStrip2.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.toolStripContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // m_sstMain
             // 
+            this.m_sstMain.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.m_sstMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.m_tslInfo});
             this.m_sstMain.Location = new System.Drawing.Point(0, 462);
@@ -90,23 +115,13 @@ namespace SoundCloudDownloader
             this.m_pnlContent.Controls.Add(this.btnSearch);
             this.m_pnlContent.Controls.Add(this.txtBxUrl);
             this.m_pnlContent.Controls.Add(this.tabControl1);
-            this.m_pnlContent.Controls.Add(this.label1);
+            this.m_pnlContent.Controls.Add(this.lablDownloadedBytes);
             this.m_pnlContent.Controls.Add(this.progressBar1);
             this.m_pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.m_pnlContent.Location = new System.Drawing.Point(0, 0);
             this.m_pnlContent.Name = "m_pnlContent";
             this.m_pnlContent.Size = new System.Drawing.Size(624, 462);
             this.m_pnlContent.TabIndex = 13;
-            // 
-            // btnSearch
-            // 
-            this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
-            this.btnSearch.Location = new System.Drawing.Point(562, 10);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(33, 22);
-            this.btnSearch.TabIndex = 16;
-            this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // tabControl1
             // 
@@ -121,11 +136,13 @@ namespace SoundCloudDownloader
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.comboBxSavePlaylists);
-            this.tabPage1.Controls.Add(this.btnSave);
-            this.tabPage1.Controls.Add(this.btnOpen);
+            this.tabPage1.Controls.Add(this.toolStrip3);
+            this.tabPage1.Controls.Add(this.toolStrip2);
+            this.tabPage1.Controls.Add(this.toolStrip1);
+            this.tabPage1.Controls.Add(this.chkBxKeepTracks);
+            this.tabPage1.Controls.Add(this.lablTrackPosition);
+            this.tabPage1.Controls.Add(this.trackBar1);
             this.tabPage1.Controls.Add(this.lablTitle);
-            this.tabPage1.Controls.Add(this.btnDownload);
             this.tabPage1.Controls.Add(this.chkBxSelectAll);
             this.tabPage1.Controls.Add(this.m_lbxEntries);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -136,33 +153,106 @@ namespace SoundCloudDownloader
             this.tabPage1.Text = "Downloader";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // toolStrip3
+            // 
+            this.toolStrip3.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.comboBxSavePlaylists,
+            this.btnOpen,
+            this.btnSave});
+            this.toolStrip3.Location = new System.Drawing.Point(370, 13);
+            this.toolStrip3.Name = "toolStrip3";
+            this.toolStrip3.Size = new System.Drawing.Size(181, 25);
+            this.toolStrip3.TabIndex = 29;
+            this.toolStrip3.Text = "toolStrip3";
+            // 
             // comboBxSavePlaylists
             // 
-            this.comboBxSavePlaylists.FormattingEnabled = true;
-            this.comboBxSavePlaylists.Location = new System.Drawing.Point(341, 13);
+            this.comboBxSavePlaylists.BackColor = System.Drawing.Color.White;
             this.comboBxSavePlaylists.Name = "comboBxSavePlaylists";
-            this.comboBxSavePlaylists.Size = new System.Drawing.Size(119, 21);
-            this.comboBxSavePlaylists.TabIndex = 19;
+            this.comboBxSavePlaylists.Size = new System.Drawing.Size(121, 25);
             // 
-            // btnSave
+            // toolStrip2
             // 
-            this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
-            this.btnSave.Location = new System.Drawing.Point(476, 12);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(33, 23);
-            this.btnSave.TabIndex = 17;
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.toolStrip2.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelCurrentTime,
+            this.toolStripLabel1,
+            this.labelTotalTime,
+            this.btnVolume,
+            this.btnRandomTrack,
+            this.btnLoop,
+            this.btnDownload});
+            this.toolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this.toolStrip2.Location = new System.Drawing.Point(376, 300);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.toolStrip2.Size = new System.Drawing.Size(206, 25);
+            this.toolStrip2.TabIndex = 28;
+            this.toolStrip2.Text = "toolStrip2";
             // 
-            // btnOpen
+            // labelCurrentTime
             // 
-            this.btnOpen.Image = ((System.Drawing.Image)(resources.GetObject("btnOpen.Image")));
-            this.btnOpen.Location = new System.Drawing.Point(518, 12);
-            this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(33, 23);
-            this.btnOpen.TabIndex = 18;
-            this.btnOpen.UseVisualStyleBackColor = true;
-            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            this.labelCurrentTime.Name = "labelCurrentTime";
+            this.labelCurrentTime.Size = new System.Drawing.Size(34, 22);
+            this.labelCurrentTime.Text = "00:00";
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(12, 22);
+            this.toolStripLabel1.Text = "/";
+            // 
+            // labelTotalTime
+            // 
+            this.labelTotalTime.Name = "labelTotalTime";
+            this.labelTotalTime.Size = new System.Drawing.Size(34, 22);
+            this.labelTotalTime.Text = "00:00";
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.AutoSize = false;
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnBack,
+            this.btnPlay,
+            this.btnForward,
+            this.btnStop});
+            this.toolStrip1.Location = new System.Drawing.Point(12, 300);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(104, 25);
+            this.toolStrip1.TabIndex = 27;
+            this.toolStrip1.Text = "toolStrip";
+            // 
+            // chkBxKeepTracks
+            // 
+            this.chkBxKeepTracks.AutoSize = true;
+            this.chkBxKeepTracks.Location = new System.Drawing.Point(122, 271);
+            this.chkBxKeepTracks.Name = "chkBxKeepTracks";
+            this.chkBxKeepTracks.Size = new System.Drawing.Size(109, 17);
+            this.chkBxKeepTracks.TabIndex = 26;
+            this.chkBxKeepTracks.Text = "Keep tracks in list";
+            this.chkBxKeepTracks.UseVisualStyleBackColor = true;
+            // 
+            // lablTrackPosition
+            // 
+            this.lablTrackPosition.AutoSize = true;
+            this.lablTrackPosition.Location = new System.Drawing.Point(183, 300);
+            this.lablTrackPosition.Name = "lablTrackPosition";
+            this.lablTrackPosition.Size = new System.Drawing.Size(0, 13);
+            this.lablTrackPosition.TabIndex = 22;
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.AutoSize = false;
+            this.trackBar1.BackColor = System.Drawing.SystemColors.Window;
+            this.trackBar1.Location = new System.Drawing.Point(122, 301);
+            this.trackBar1.Maximum = 100;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(251, 25);
+            this.trackBar1.TabIndex = 20;
+            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
             // 
             // lablTitle
             // 
@@ -172,20 +262,10 @@ namespace SoundCloudDownloader
             this.lablTitle.Size = new System.Drawing.Size(0, 13);
             this.lablTitle.TabIndex = 10;
             // 
-            // btnDownload
-            // 
-            this.btnDownload.Image = ((System.Drawing.Image)(resources.GetObject("btnDownload.Image")));
-            this.btnDownload.Location = new System.Drawing.Point(499, 289);
-            this.btnDownload.Name = "btnDownload";
-            this.btnDownload.Size = new System.Drawing.Size(52, 34);
-            this.btnDownload.TabIndex = 9;
-            this.btnDownload.UseVisualStyleBackColor = true;
-            this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
-            // 
             // chkBxSelectAll
             // 
             this.chkBxSelectAll.AutoSize = true;
-            this.chkBxSelectAll.Location = new System.Drawing.Point(15, 294);
+            this.chkBxSelectAll.Location = new System.Drawing.Point(15, 271);
             this.chkBxSelectAll.Name = "chkBxSelectAll";
             this.chkBxSelectAll.Size = new System.Drawing.Size(68, 17);
             this.chkBxSelectAll.TabIndex = 8;
@@ -201,7 +281,7 @@ namespace SoundCloudDownloader
             this.m_lbxEntries.FormattingEnabled = true;
             this.m_lbxEntries.Location = new System.Drawing.Point(15, 41);
             this.m_lbxEntries.Name = "m_lbxEntries";
-            this.m_lbxEntries.Size = new System.Drawing.Size(536, 244);
+            this.m_lbxEntries.Size = new System.Drawing.Size(536, 199);
             this.m_lbxEntries.TabIndex = 7;
             // 
             // tabPage2
@@ -337,21 +417,150 @@ namespace SoundCloudDownloader
             this.lbxErrorLog.Size = new System.Drawing.Size(537, 212);
             this.lbxErrorLog.TabIndex = 0;
             // 
-            // label1
+            // lablDownloadedBytes
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(256, 437);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(10, 13);
-            this.label1.TabIndex = 13;
-            this.label1.Text = " ";
+            this.lablDownloadedBytes.AutoSize = true;
+            this.lablDownloadedBytes.Location = new System.Drawing.Point(256, 437);
+            this.lablDownloadedBytes.Name = "lablDownloadedBytes";
+            this.lablDownloadedBytes.Size = new System.Drawing.Size(10, 13);
+            this.lablDownloadedBytes.TabIndex = 13;
+            this.lablDownloadedBytes.Text = " ";
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(20, 411);
+            this.progressBar1.Location = new System.Drawing.Point(24, 411);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(575, 23);
             this.progressBar1.TabIndex = 12;
+            // 
+            // timer
+            // 
+            this.timer.Interval = 500;
+            // 
+            // toolStripContainer1
+            // 
+            // 
+            // toolStripContainer1.ContentPanel
+            // 
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(624, 459);
+            this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.Size = new System.Drawing.Size(624, 484);
+            this.toolStripContainer1.TabIndex = 23;
+            this.toolStripContainer1.Text = "toolStripContainer1";
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Image = global::SoundCloudDownloader.Properties.Resources.Search;
+            this.btnSearch.Location = new System.Drawing.Point(562, 10);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(33, 22);
+            this.btnSearch.TabIndex = 16;
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // btnOpen
+            // 
+            this.btnOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnOpen.Image = ((System.Drawing.Image)(resources.GetObject("btnOpen.Image")));
+            this.btnOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnOpen.Name = "btnOpen";
+            this.btnOpen.Size = new System.Drawing.Size(23, 22);
+            this.btnOpen.Text = "Open List";
+            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            // 
+            // btnSave
+            // 
+            this.btnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
+            this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(23, 22);
+            this.btnSave.Text = "Save List";
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnVolume
+            // 
+            this.btnVolume.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnVolume.Image = global::SoundCloudDownloader.Properties.Resources.Volume;
+            this.btnVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnVolume.Name = "btnVolume";
+            this.btnVolume.Size = new System.Drawing.Size(23, 22);
+            this.btnVolume.Text = "Volume";
+            this.btnVolume.Click += new System.EventHandler(this.btnVolume_Click);
+            // 
+            // btnRandomTrack
+            // 
+            this.btnRandomTrack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnRandomTrack.Image = global::SoundCloudDownloader.Properties.Resources.Random;
+            this.btnRandomTrack.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnRandomTrack.Name = "btnRandomTrack";
+            this.btnRandomTrack.Size = new System.Drawing.Size(23, 22);
+            this.btnRandomTrack.Text = "Play Random Tracks";
+            this.btnRandomTrack.Click += new System.EventHandler(this.btnRandomTrack_Click);
+            // 
+            // btnLoop
+            // 
+            this.btnLoop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnLoop.Image = ((System.Drawing.Image)(resources.GetObject("btnLoop.Image")));
+            this.btnLoop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnLoop.Name = "btnLoop";
+            this.btnLoop.Size = new System.Drawing.Size(23, 22);
+            this.btnLoop.Text = "Repeat Track";
+            this.btnLoop.Click += new System.EventHandler(this.btnLoop_Click);
+            // 
+            // btnDownload
+            // 
+            this.btnDownload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnDownload.Image = global::SoundCloudDownloader.Properties.Resources.Download;
+            this.btnDownload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnDownload.Name = "btnDownload";
+            this.btnDownload.Size = new System.Drawing.Size(23, 22);
+            this.btnDownload.Text = "Download all selected Tracks";
+            this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
+            // 
+            // btnBack
+            // 
+            this.btnBack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnBack.Image = global::SoundCloudDownloader.Properties.Resources.Back;
+            this.btnBack.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(23, 22);
+            this.btnBack.Text = "Open File";
+            this.btnBack.ToolTipText = "Back";
+            this.btnBack.Click += new System.EventHandler(this.buttonBack_Click);
+            // 
+            // btnPlay
+            // 
+            this.btnPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnPlay.Image = global::SoundCloudDownloader.Properties.Resources.Play;
+            this.btnPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(23, 22);
+            this.btnPlay.Text = "Play";
+            this.btnPlay.Click += new System.EventHandler(this.buttonPlay_Click);
+            // 
+            // btnForward
+            // 
+            this.btnForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnForward.Image = global::SoundCloudDownloader.Properties.Resources.Forward;
+            this.btnForward.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnForward.Name = "btnForward";
+            this.btnForward.Size = new System.Drawing.Size(23, 22);
+            this.btnForward.Text = "toolStripButton2";
+            this.btnForward.ToolTipText = "Forward";
+            this.btnForward.Click += new System.EventHandler(this.buttonForward_Click);
+            // 
+            // btnStop
+            // 
+            this.btnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnStop.Image = global::SoundCloudDownloader.Properties.Resources.Stop;
+            this.btnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(23, 22);
+            this.btnStop.Text = "Stop";
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // txtBxUrl
             // 
@@ -368,13 +577,15 @@ namespace SoundCloudDownloader
             this.ClientSize = new System.Drawing.Size(624, 484);
             this.Controls.Add(this.m_pnlContent);
             this.Controls.Add(this.m_sstMain);
+            this.Controls.Add(this.toolStripContainer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(640, 480);
+            this.MinimumSize = new System.Drawing.Size(636, 467);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Soundload";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.m_sstMain.ResumeLayout(false);
             this.m_sstMain.PerformLayout();
             this.m_pnlContent.ResumeLayout(false);
@@ -382,12 +593,21 @@ namespace SoundCloudDownloader
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.toolStrip3.ResumeLayout(false);
+            this.toolStrip3.PerformLayout();
+            this.toolStrip2.ResumeLayout(false);
+            this.toolStrip2.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.toolStripContainer1.ResumeLayout(false);
+            this.toolStripContainer1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -397,14 +617,13 @@ namespace SoundCloudDownloader
         private System.Windows.Forms.Panel m_pnlContent;
         private System.Windows.Forms.CheckedListBox m_lbxEntries;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lablDownloadedBytes;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox txtBxPath;
         private System.Windows.Forms.CheckBox chkBxDownloadPath;
-        private System.Windows.Forms.Button btnDownload;
         private System.Windows.Forms.CheckBox chkBxSelectAll;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox chkBxImageTags;
@@ -417,9 +636,28 @@ namespace SoundCloudDownloader
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.ListBox lbxErrorLog;
         private System.Windows.Forms.Button btnSearch;
-        private System.Windows.Forms.Button btnOpen;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lablTitle;
-        private System.Windows.Forms.ComboBox comboBxSavePlaylists;
+        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.Label lablTrackPosition;
+        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+        private System.Windows.Forms.CheckBox chkBxKeepTracks;
+        private System.Windows.Forms.ToolStrip toolStrip3;
+        private System.Windows.Forms.ToolStripComboBox comboBxSavePlaylists;
+        private System.Windows.Forms.ToolStripButton btnOpen;
+        private System.Windows.Forms.ToolStripButton btnSave;
+        private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.ToolStripLabel labelCurrentTime;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripLabel labelTotalTime;
+        private System.Windows.Forms.ToolStripButton btnVolume;
+        private System.Windows.Forms.ToolStripButton btnRandomTrack;
+        private System.Windows.Forms.ToolStripButton btnLoop;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton btnBack;
+        private System.Windows.Forms.ToolStripButton btnPlay;
+        private System.Windows.Forms.ToolStripButton btnForward;
+        private System.Windows.Forms.ToolStripButton btnStop;
+        private System.Windows.Forms.ToolStripButton btnDownload;
     }
 }
