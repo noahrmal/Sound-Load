@@ -88,6 +88,7 @@
             this.MinimizeBox = false;
             this.Name = "form_Inputbox";
             this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Save Link";
             this.Load += new System.EventHandler(this.form_Inputbox_Load);
